@@ -4,6 +4,7 @@ import nltk
 import re
 import gg_api
 from nltk.tokenize import word_tokenize
+from imdb import Cinemagoer
 
 df = pd.read_json('gg2013.json')
 tweets = df['text'] #list of tweet text
@@ -20,11 +21,19 @@ def create_text_files():
             for i in d:
                 t.write(f"{i['user']['screen_name']}\n")
 
-f = open('win.text', 'w', encoding='utf-8')
+congrats = open('congrats.txt', 'w', encoding='utf-8')
+win = open('win.text', 'w', encoding='utf-8')
+host = open('host.txt', 'w', encoding='utf-8')
+presenters = open('presenters.txt', 'w', encoding='utf-8')
+Nominees = open('nominees.txt', 'w', encoding='utf-8')
 for i in tweets:
     text = word_tokenize(i)
-    if 'win' in text:
-        f.write(f"{i}\n")
+    if re.search(r'\b(won|wins|win)\b', i):
+        win.write(f"{i}\n")
+    if 'Congratulations' in text or 'congratulations' in text:
+        congrats.write(f"{i}\n")
+    if re.search(r'\b(hosts?|host)\b', i):
+        host.write(f"{i}\n")
 
 
 
