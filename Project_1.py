@@ -16,30 +16,36 @@ ia = IMDb()
 NLP = spacy.load('en_core_web_sm') # Loads spacy model
 
 # used just for reference
-def create_text_files():
+def create_text_files(name):
     with open('gg2013.json') as f:
         d = json.load(f)
-        with open('tweets.txt', "w", encoding="utf-8") as t:
-            for i in d:
-                t.write(f"{i['text']}\n")
-        with open('users.txt', 'w', encoding='utf-8') as t:
-            for i in d:
-                t.write(f"{i['user']['screen_name']}\n")
+        if name == "tweets":
+            with open('tweets.txt', "w", encoding="utf-8") as t:
+                for i in d:
+                    t.write(f"{i['text']}\n")
+        if name == "users":
+            with open('users.txt', 'w', encoding='utf-8') as t:
+                for i in d:
+                    t.write(f"{i['user']['screen_name']}\n")
+
     congrats = open('congrats.txt', 'w', encoding='utf-8')
     win = open('win.text', 'w', encoding='utf-8')
     host = open('host.txt', 'w', encoding='utf-8')
+    awards = open('awards.txt', 'w', encoding='utf-8')
     presenters = open('presenters.txt', 'w', encoding='utf-8')
-    Nominees = open('nominees.txt', 'w', encoding='utf-8')
+    nominees = open('nominees.txt', 'w', encoding='utf-8')
     for i in tweets:
         text = word_tokenize(i)
         if text[0] == 'RT':
             continue
-        if re.search(r'\b(won|wins|win)\b', i):
+        if re.search(r'\b(won|wins|win)\b', i) and name == "won":
             win.write(f"{i}\n")
-        if 'Congratulations' in text or 'congratulations' in text:
+        if 'Congratulations' in text or 'congratulations' in text and name == "congrats":
             congrats.write(f"{i}\n")
-        if re.search(r'\b(hosts?|host)\b', i):
+        if re.search(r'\b(hosts?|host)\b', i) and name == "hosts":
             host.write(f"{i}\n")
+        if re.search(r'\b(wins best)\b', i) and name == "awards":
+            awards.write(f"{i}\n")
 
 def get_human_names(file_name):
     # Getting people's names from a file
@@ -53,6 +59,7 @@ def get_human_names(file_name):
     for ent in entities:
         if ent[1] == 'PERSON':
             names.append(ent[0])
+
     return names
 
 def find_hosts(host_file):
@@ -73,6 +80,18 @@ def find_hosts(host_file):
         host_names_file.write(f"{i}\n")
     return highest_two
 
+def find_awards(awards_file):
+    award_names_file = open('award_names.txt', 'w', encoding='utf-8')
+
+    with open(awards_file, 'r', encoding='utf-8') as file:
+        text = file.read()
+
+    awards = re.findall(r'(?:wins)\s+(.*)', text)
+
+    for i in awards:
+        award_names_file.write(f"{i}\n")
+    
+
 def verify_person(person_name):
     name_pattern = re.compile(r'\s')
     if re.search(name_pattern, person_name):
@@ -88,5 +107,6 @@ def verify_person(person_name):
     #         #print(f"Name: {result['name']}, ID: {result.personID}")
     #         return result
 
-#create_text_files()
-find_hosts('host.txt')
+# create_text_files(name='awards')
+# find_hosts('host.txt')
+find_awards('awards.txt')
