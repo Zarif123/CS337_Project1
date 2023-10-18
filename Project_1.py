@@ -44,8 +44,9 @@ def create_text_files(name):
             congrats.write(f"{i}\n")
         if re.search(r'\b(hosts?|host)\b', i) and name == "hosts":
             host.write(f"{i}\n")
-        if re.search(r'\b(wins best)\b', i) and name == "awards":
-            awards.write(f"{i}\n")
+        if re.search(r'(?i)win(s)?\s+best|won\s+best', i) and name == "awards":
+            award_text = re.sub(r'[.!:#?@&^%$*()+=]', '', i)
+            awards.write(f"{award_text}\n")
 
 def get_human_names(file_name):
     # Getting people's names from a file
@@ -86,10 +87,17 @@ def find_awards(awards_file):
     with open(awards_file, 'r', encoding='utf-8') as file:
         text = file.read()
 
-    awards = re.findall(r'(?:wins)\s+(.*)', text)
+    win_pattern = r'\b(won|wins|win)\b'
+    stop_words = r'\b(for)\b'
+    combined_pattern = r'\b(won|wins|win)\b(.*?)\b(for|at|takes|yet|goes|he|her|their|but|is|oh)\b'
+
+    awards = re.findall(combined_pattern, text)
 
     for i in awards:
-        award_names_file.write(f"{i}\n")
+        # print(i[1].split(' '))
+        print(i)
+        if len(i[1].split(' ')) >= 4 + 2:
+            award_names_file.write(f"{i[1]}\n")
     
 
 def verify_person(person_name):
