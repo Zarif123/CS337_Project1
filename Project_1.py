@@ -6,8 +6,10 @@ import gg_api
 from nltk.tokenize import word_tokenize
 from imdb import Cinemagoer
 import spacy
+
 from imdb import IMDb
 from collections import Counter
+import os
 
 df = pd.read_json('gg2013.json')
 tweets = df['text'] #list of tweet text
@@ -118,3 +120,31 @@ def verify_person(person_name):
 # create_text_files(name='awards')
 # find_hosts('host.txt')
 find_awards('awards.txt')
+
+
+
+# with open('award_names.txt', 'r') as file:
+#     award_names = [line.strip() for line in file.readlines()]
+
+# os.makedirs('awardGroupings', exist_ok=True)
+
+# def extract_named_entities(text):
+#     doc = NLP(text)
+#     named_entities =set([ent.text for ent in doc.ents])
+#     return named_entities
+
+# grouped_awards = {}
+# for award in award_names:
+#     named_entities = extract_named_entities(award)
+#     key = ', '.join(sorted(named_entities))
+#     if key in grouped_awards:
+#         grouped_awards[key].append(award)
+#     else:
+#         grouped_awards[key] =[award]
+
+# for key, group in grouped_awards.items():
+#     print(f"Group:{key}\nNames:{group}\n")
+
+# for key, group in grouped_awards.items():
+#     with open(f'awardGroupings/{key}.txt', 'w') as group_file:
+#         group_file.write('\n'.join(group))
