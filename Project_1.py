@@ -46,7 +46,7 @@ def create_text_files(name):
             congrats.write(f"{i}\n")
         if re.search(r'\b(hosts?|host)\b', i) and name == "hosts":
             host.write(f"{i}\n")
-        if re.search(r'(?i)win(s)?\s+best|won\s+best', i) and name == "awards":
+        if re.search(r'(?i)win(s)?\s+best|won\s+best|winning\s+best', i) and name == "awards":
             award_text = re.sub(r'[.!:#?@&^%$*()+=]', '', i)
             awards.write(f"{award_text}\n")
 
@@ -87,64 +87,53 @@ def find_awards(awards_file):
     award_names_file = open('award_names.txt', 'w', encoding='utf-8')
 
     with open(awards_file, 'r', encoding='utf-8') as file:
-        text = file.read()
+        text = [line.strip() for line in file.readlines()]
 
-    win_pattern = r'\b(won|wins|win)\b'
-    stop_words = r'\b(for)\b'
-    combined_pattern = r'\b(won|wins|win)\b(.*?)\b(for|at|takes|yet|goes|he|her|their|but|is|oh)\b'
+    # combined_pattern = r'\b(won|wins|win)\b(.*?)\b(for|at|takes|yet|goes|he|her|their|but|is|oh)\b'
+    stopwords = ['for', 'at', 'takes', 'goes', 'yet', 'goes', 'he', 'her', 'their', 'but', 'is', 'oh', 'GoldenGlobes', 'http', 'I\'m']
+    stop_words_pattern = "|".join(map(re.escape, stopwords))
+    # pattern = r'wins\s+(.*?)\s+(?:for|at)'
+    pattern = rf'wins\s+(.*?)\s+(?:{stop_words_pattern})'
 
-    awards = re.findall(combined_pattern, text)
-
-    for i in awards:
-        # print(i[1].split(' '))
-        print(i)
-        if len(i[1].split(' ')) >= 4 + 2:
-            award_names_file.write(f"{i[1]}\n")
+    for i in text:
+        award = re.search(pattern, i)
+        if award and len(award.group(1).split(' ')) > 1:
+            award_names_file.write(f"{award.group(1)}\n")
     
-
 def verify_person(person_name):
     name_pattern = re.compile(r'\s')
     if re.search(name_pattern, person_name):
         return person_name
-    # # Perform the search
-    # if len(person_name.split(' ')) < 2:
-    #     return
-    # search_results = ia.search_person(person_name)
 
-    # # Display search results
-    # if search_results:
-    #     for result in search_results:
-    #         #print(f"Name: {result['name']}, ID: {result.personID}")
-    #         return result
+def extract_named_entities(text):
+    doc = NLP(text)
+    named_entities =set([ent.text for ent in doc.ents])
+    return named_entities
+
+def group_awards():
+    with open('award_names.txt', 'r', encoding='utf-8') as file:
+        award_names = [line.strip() for line in file.readlines()]
+
+    os.makedirs('awardGroupings', exist_ok=True)
+
+    grouped_awards = {}
+    for award in award_names:
+        named_entities = extract_named_entities(award)
+        key = ', '.join(sorted(named_entities))
+        if key.split(" ")[0] == "Best":
+            if key in grouped_awards:
+                grouped_awards[key].append(award)
+            else:
+                grouped_awards[key] =[award]
+
+    for key, group in grouped_awards.items():
+        key = key.replace("/"," ")
+        key = key.replace(",", "")
+        key = key.replace("\"","")
+        with open(f'awardGroupings/{key}.txt', 'w', encoding='utf-8') as group_file:
+            group_file.write('\n'.join(group))
 
 # create_text_files(name='awards')
 # find_hosts('host.txt')
-find_awards('awards.txt')
-
-
-
-# with open('award_names.txt', 'r') as file:
-#     award_names = [line.strip() for line in file.readlines()]
-
-# os.makedirs('awardGroupings', exist_ok=True)
-
-# def extract_named_entities(text):
-#     doc = NLP(text)
-#     named_entities =set([ent.text for ent in doc.ents])
-#     return named_entities
-
-# grouped_awards = {}
-# for award in award_names:
-#     named_entities = extract_named_entities(award)
-#     key = ', '.join(sorted(named_entities))
-#     if key in grouped_awards:
-#         grouped_awards[key].append(award)
-#     else:
-#         grouped_awards[key] =[award]
-
-# for key, group in grouped_awards.items():
-#     print(f"Group:{key}\nNames:{group}\n")
-
-# for key, group in grouped_awards.items():
-#     with open(f'awardGroupings/{key}.txt', 'w') as group_file:
-#         group_file.write('\n'.join(group))
+# find_awards('awards.txt')
+group_awards()
