@@ -116,7 +116,24 @@ def group_awards():
         if key[1] > 2:
             award_groups.write(f"{key[0]}")
 
+def find_winners():
+    with open('award_groups.txt','r',encoding='utf-8') as file:
+        award_list = [line for line in file.readlines()]
+    with open('awards.txt', 'r', encoding='utf-8') as file:
+        award_corpus = [line for line in file.readlines()]
+    winner_file = open("winners.txt", 'w', encoding='utf-8')
+
+    winner_map = dict()
+
+    for award in award_list:
+        pattern = rf'(.+?)\s+wins|winning|win|won {award}'
+        for line in award_corpus:
+            winner = re.search(pattern, line)
+            if winner:
+                winner_file.write(f"{winner.group(1)}, {award}")
+
 # create_text_files(name='awards')
 # find_hosts('host.txt')
-find_awards('awards.txt')
-group_awards()
+# find_awards('awards.txt')
+# group_awards()
+find_winners()
