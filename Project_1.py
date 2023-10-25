@@ -47,7 +47,7 @@ def create_text_files(name):
         if re.search(r'\b(hosts?|host)\b', i) and name == "hosts":
             host.write(f"{i}\n")
         if re.search(r'(?i)win(s)?\s+best|won\s+best|winning\s+best', i) and name == "awards":
-            award_text = re.sub(r'[.!:#?@&^%$*()+=]', '', i)
+            award_text = re.sub(r'[^a-zA-Z0-9]+', ' ', i).lower()
             awards.write(f"{award_text}\n")
 
 def get_human_names(file_name):
@@ -90,14 +90,14 @@ def find_awards(awards_file):
         text = [line.strip() for line in file.readlines()]
 
     # combined_pattern = r'\b(won|wins|win)\b(.*?)\b(for|at|takes|yet|goes|he|her|their|but|is|oh)\b'
-    stopwords = ['for', 'at', 'takes', 'goes', 'yet', 'goes', 'he', 'her', 'their', 'but', 'is', 'oh', 'GoldenGlobes', 'http', 'I\'m']
+    stopwords = ['for', 'at', 'and', 'while', 'who', 'did', 'not', 'takes', 'goes', 'yet', 'goes', 'he', 'her', 'their', 'but', 'is', 'oh', 'goldenglobes', 'globe', 'golden', 'http', 'via']
     stop_words_pattern = "|".join(map(re.escape, stopwords))
     # pattern = r'wins\s+(.*?)\s+(?:for|at)'
     pattern = rf'wins\s+(.*?)\s+(?:{stop_words_pattern})'
 
     for i in text:
         award = re.search(pattern, i)
-        if award and len(award.group(1).split(' ')) > 1:
+        if award and len(award.group(1).split(' ')) >= 3:
             award_names_file.write(f"{award.group(1)}\n")
     
 def verify_person(person_name):
@@ -105,35 +105,18 @@ def verify_person(person_name):
     if re.search(name_pattern, person_name):
         return person_name
 
-def extract_named_entities(text):
-    doc = NLP(text)
-    named_entities =set([ent.text for ent in doc.ents])
-    return named_entities
-
 def group_awards():
+    award_groups = open('award_groups.txt', 'w', encoding='utf-8')
     with open('award_names.txt', 'r', encoding='utf-8') as file:
-        award_names = [line.strip() for line in file.readlines()]
+        award_names = [line for line in file.readlines()]
 
-    os.makedirs('awardGroupings', exist_ok=True)
+    award_count = Counter(award_names)
 
-    grouped_awards = {}
-    for award in award_names:
-        named_entities = extract_named_entities(award)
-        key = ', '.join(sorted(named_entities))
-        if key.split(" ")[0] == "Best":
-            if key in grouped_awards:
-                grouped_awards[key].append(award)
-            else:
-                grouped_awards[key] =[award]
-
-    for key, group in grouped_awards.items():
-        key = key.replace("/"," ")
-        key = key.replace(",", "")
-        key = key.replace("\"","")
-        with open(f'awardGroupings/{key}.txt', 'w', encoding='utf-8') as group_file:
-            group_file.write('\n'.join(group))
+    for key in award_count.most_common():
+        if key[1] > 2:
+            award_groups.write(f"{key[0]}")
 
 # create_text_files(name='awards')
 # find_hosts('host.txt')
-# find_awards('awards.txt')
+find_awards('awards.txt')
 group_awards()
