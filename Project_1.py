@@ -118,25 +118,24 @@ def group_awards():
 
 def find_winners():
     with open('award_groups.txt','r',encoding='utf-8') as file:
-        award_list = [line for line in file.readlines()]
+        award_list = [line.strip() for line in file.readlines()] #make sure to strip new lines
     with open('awards.txt', 'r', encoding='utf-8') as file:
         award_corpus = [line for line in file.readlines()]
     winner_file = open("winners.txt", 'w', encoding='utf-8')
 
-    winner_map = dict()
-
     for award in award_list:
-        pattern = rf'(.+?)\s+wins|winning|win|won {award}'
+        pattern = rf"(.+?)\s+(wins|win|won)\s+{award}"
         for line in award_corpus:
             winner = re.search(pattern, line)
             if winner:
-                winner_file.write(f"{winner.group(1)}, {award}")
+                # print(f"{winner}, {award}")
+                winner_file.write(f"{winner.group(1)}, {award}\n")
 
 def counter_winners():
     result = {}
 
     with open('winners.txt', 'r', encoding='UTF-8' ) as file:
-        lines = [line for line in file.readlines()]
+        lines = [line.strip() for line in file.readlines()]
 
     for line in lines:
         key = line.split(',')[1]
@@ -146,10 +145,13 @@ def counter_winners():
         else:
             result[key] = [value]
 
-    print(result)
-    # for key in result.keys():
-    #     win_count = Counter(result[key])
-    #     print(f"keys: {key}, {win_count}")
+    # print(result)
+    top_winners_file = open("top_winners.txt", 'w', encoding='utf-8')
+    for key in result.keys():
+        win_count = Counter(result[key])
+        # print(f"keys: {key}, {win_count}")
+        top_winners_file.write(f"{key}, {max(win_count, key=win_count.get)}\n")
+
 
 
 
@@ -158,4 +160,5 @@ def counter_winners():
 # find_hosts('host.txt')
 # find_awards('awards.txt')
 # group_awards()
+# find_winners()
 counter_winners()
