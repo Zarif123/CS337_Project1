@@ -132,8 +132,30 @@ def find_winners():
             if winner:
                 winner_file.write(f"{winner.group(1)}, {award}")
 
+def counter_winners():
+    result = {}
+
+    with open('winners.txt', 'r', encoding='UTF-8' ) as file:
+        lines = [line for line in file.readlines()]
+
+    for line in lines:
+        key = line.split(',')[1]
+        value = line.split(',')[0]
+        if key in result:
+            result[key].append(value)
+        else:
+            result[key] = [value]
+
+    print(result)
+    # for key in result.keys():
+    #     win_count = Counter(result[key])
+    #     print(f"keys: {key}, {win_count}")
+
+
+
+
 # create_text_files(name='awards')
 # find_hosts('host.txt')
 # find_awards('awards.txt')
 # group_awards()
-find_winners()
+counter_winners()
