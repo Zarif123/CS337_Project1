@@ -147,11 +147,46 @@ def counter_winners():
 
     # print(result)
     top_winners_file = open("top_winners.txt", 'w', encoding='utf-8')
+
     for key in result.keys():
         win_count = Counter(result[key])
         # print(f"keys: {key}, {win_count}")
+
+        # Finding number one winner
         top_winners_file.write(f"{key}, {max(win_count, key=win_count.get)}\n")
 
+def count_nominees():
+    with open('top_winners.txt', 'r', encoding='utf-8') as top_winners:
+        winner_lines = [line.strip() for line in top_winners]
+    with open('tweets.txt', 'r', encoding='utf-8') as tweets:
+        tweet_lines = [line.strip().lower() for line in tweets]
+
+    nominee_map = dict()
+
+    for line in winner_lines:
+        winner = line.split(',')[1]
+        award = line.split(',')[0]
+
+        pattern = rf'^(?!.*{winner}).*{award}'
+        for tweet in tweet_lines:
+            nominee = re.search(pattern, tweet)
+            if nominee:
+                if award in nominee_map:
+                    nominee_map[award].append(nominee.group(0))
+                else:
+                    nominee_map[award] = [nominee.group(0)]
+
+    # Finding nominees
+    nominees_file = open("nominees.txt", 'w', encoding='utf-8')
+
+    for key in nominee_map.keys():
+        nominee_count = Counter(nominee_map[key])
+
+        nominee_index = 0
+        for nominee in nominee_count.keys():
+            if nominee_index > 0 and nominee_index < 5:
+                nominees_file.write(f"{key}, {nominee}\n")
+            nominee_index += 1
 
 
 
@@ -161,4 +196,5 @@ def counter_winners():
 # find_awards('awards.txt')
 # group_awards()
 # find_winners()
-counter_winners()
+# counter_winners()
+count_nominees()
