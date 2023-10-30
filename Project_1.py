@@ -35,20 +35,26 @@ def create_text_files(name):
     host = open('host.txt', 'w', encoding='utf-8')
     awards = open('awards.txt', 'w', encoding='utf-8')
     presenters = open('presenters.txt', 'w', encoding='utf-8')
-    nominees = open('nominees.txt', 'w', encoding='utf-8')
+    nominees = open('nominee_corpus.txt', 'w', encoding='utf-8')
+    golden_globe_awards = open('golden_globe_awards.txt', 'w', encoding='utf-8')
     for i in tweets:
         text = word_tokenize(i)
-        if text[0] == 'RT':
+        if re.search(r'\b(RT @goldenglobes)\b', i) or re.search(r'\b(RT @TVGuide)\b', i) and name == 'gg_awards':
+            golden_globe_awards.write(f"{i}\n")
+        elif text[0] == 'RT':
             continue
-        if re.search(r'\b(won|wins|win)\b', i) and name == "won":
+        elif re.search(r'\b(won|wins|win)\b', i) and name == "won":
             win.write(f"{i}\n")
-        if 'Congratulations' in text or 'congratulations' in text and name == "congrats":
+        elif 'Congratulations' in text or 'congratulations' in text and name == "congrats":
             congrats.write(f"{i}\n")
-        if re.search(r'\b(hosts?|host)\b', i) and name == "hosts":
+        elif re.search(r'\b(hosts?|host)\b', i) and name == "hosts":
             host.write(f"{i}\n")
-        if re.search(r'(?i)win(s)?\s+best|won\s+best|winning\s+best', i) and name == "awards":
+        elif re.search(r'(?i)win(s)?\s+best|won\s+best|winning\s+best', i) and name == "awards":
             award_text = re.sub(r'[^a-zA-Z0-9]+', ' ', i).lower()
             awards.write(f"{award_text}\n")
+        elif re.search(r'\b(should have won)\b', i) or re.search(r'\b(did\'nt win)\b', i) or re.search(r'\b(won over)\b', i) and name == "nominees":
+            nominee_text = re.sub(r'[^a-zA-Z0-9]+', ' ', i).lower()
+            nominees.write(f"{nominee_text}\n")
 
 def get_human_names(file_name):
     # Getting people's names from a file
@@ -99,6 +105,55 @@ def find_awards(awards_file):
         award = re.search(pattern, i)
         if award and len(award.group(1).split(' ')) >= 3:
             award_names_file.write(f"{award.group(1)}\n")
+
+def find_awards_v2():
+    with open('golden_globe_awards.txt', 'r', encoding='utf-8') as file:
+        text = [line.strip() for line in file.readlines()]
+    awards_and_winners = open('awards_and_winners.txt', 'w', encoding='utf-8')
+    awards = open('awards.txt', 'w', encoding='utf-8')
+    winners = open('winners.txt', 'w', encoding='utf-8')
+
+    pattern_1 = r': (.*?)\('
+    pattern_2 = r': (.*?)\#'
+    award_map = dict()
+    for i in text:
+        award_1 = re.search(pattern_1, i)
+        award_2 = re.search(pattern_2, i)
+        if award_1:
+            matched_award = award_1.group(1)
+            split_award = matched_award.split('-')
+            num = len(split_award)
+            if 'Best' in split_award[0][0:4]:
+                if num == 2:
+                    text_award = f"{split_award[0].strip().lower()}"
+                    text_winner = f"{split_award[1].strip().lower()}"
+                    if text_award not in award_map:
+                        award_map[text_award] = text_winner
+                elif num >= 3:
+                    text_award = f"{split_award[0].strip().lower()} - {split_award[1].strip().lower()}"
+                    text_winner = f"{split_award[2].strip().lower()}"
+                    if text_award not in award_map:
+                        award_map[text_award] = text_winner
+        if award_2:
+            matched_award = award_2.group(1)
+            split_award = matched_award.split('-')
+            num = len(split_award)
+            if 'Best' in split_award[0][0:4]:
+                if num == 4 and '@' not in split_award[2]:
+                    text_award = f"{split_award[0].strip().lower()}"
+                    text_winner = f"{split_award[1].strip().lower()}"
+                    if text_award not in award_map and len(text_winner.split()) > 1 and 'or' not in text_winner:
+                        award_map[text_award] = text_winner
+                if num == 5:
+                    text_award = f"{split_award[0].strip().lower()} - {split_award[1].strip().lower()}"
+                    text_winner = f"{split_award[2].strip().lower()}"
+                    if text_award not in award_map:
+                        award_map[text_award] = text_winner
+
+    for key in award_map:
+        awards.write(f"{key}\n")
+        winners.write(f"{award_map[key]}\n")
+
     
 def verify_person(person_name):
     name_pattern = re.compile(r'\s')
@@ -166,8 +221,6 @@ def count_nominees():
     for line in winner_lines:
         winner = line.split(',')[1]
         award = line.split(',')[0]
-
-        pattern = rf'^(?!.*{winner}).*{award}'
         for tweet in tweet_lines:
             nominee = re.search(pattern, tweet)
             if nominee:
@@ -191,10 +244,11 @@ def count_nominees():
 
 
 
-# create_text_files(name='awards')
+# create_text_files(name='gg_awards')
 # find_hosts('host.txt')
 # find_awards('awards.txt')
+find_awards_v2()
 # group_awards()
 # find_winners()
 # counter_winners()
-count_nominees()
+# count_nominees()
