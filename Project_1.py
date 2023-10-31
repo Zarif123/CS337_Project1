@@ -30,34 +30,69 @@ def create_text_files(name):
                 for i in d:
                     t.write(f"{i['user']['screen_name']}\n")
 
-    congrats = open('congrats.txt', 'w', encoding='utf-8')
-    win = open('win.text', 'w', encoding='utf-8')
-    host = open('host.txt', 'w', encoding='utf-8')
-    awards = open('awards_corpus.txt', 'w', encoding='utf-8')
-    presenters = open('presenter_corpus.txt', 'w', encoding='utf-8')
-    nominees = open('nominee_corpus.txt', 'w', encoding='utf-8')
-    golden_globe_awards = open('golden_globe_awards.txt', 'w', encoding='utf-8')
     for i in tweets:
         text = word_tokenize(i)
         if re.search(r'\b(RT @goldenglobes)\b', i) or re.search(r'\b(RT @TVGuide)\b', i) and name == 'gg_awards':
+            golden_globe_awards = open('golden_globe_awards.txt', 'w', encoding='utf-8')
             golden_globe_awards.write(f"{i}\n")
         elif text[0] == 'RT':
             continue
         elif re.search(r'\b(won|wins|win)\b', i) and name == "won":
+            win = open('win.text', 'w', encoding='utf-8')
             win.write(f"{i}\n")
         elif 'Congratulations' in text or 'congratulations' in text and name == "congrats":
+            congrats = open('congrats.txt', 'w', encoding='utf-8')
             congrats.write(f"{i}\n")
         elif re.search(r'\b(hosts?|host)\b', i) and name == "hosts":
+            host = open('host.txt', 'w', encoding='utf-8')
             host.write(f"{i}\n")
         elif re.search(r'(?i)win(s)?\s+best|won\s+best|winning\s+best', i) and name == "awards":
+            awards = open('awards_corpus.txt', 'w', encoding='utf-8')
             award_text = re.sub(r'[^a-zA-Z0-9]+', ' ', i).lower()
             awards.write(f"{award_text}\n")
         elif re.search(r'\b(no win)\b', i) or re.search(r'\b(nominated)\b', i) or re.search(r'\b(does not)\b', i) or re.search(r'\b(did not)\b', i) or re.search(r'\b(nominated)\b', i) or re.search(r'\b(should have won)\b', i) or re.search(r'\b(did\'nt win)\b', i) or re.search(r'\b(won over)\b', i) and name == "nominees":
-            nominee_text = re.sub(r'[^a-zA-Z0-9]+', ' ', i).lower()
+            nominees = open('nominee_corpus.txt', 'w', encoding='utf-8')
+            nominee_text = re.sub(r'[^a-zA-Z0-9]+', ' ', i)
             nominees.write(f"{nominee_text}\n")
         elif re.search(r'\b(presents)\b', i) or re.search(r'\b(presented)\b', i) or re.search(r'\b(presenting)\b', i) and name == "presenters":
-            presenter_text = re.sub(r'[^a-zA-Z0-9]+', ' ', i).lower()
+            presenters = open('presenter_corpus.txt', 'w', encoding='utf-8')
+            presenter_text = re.sub(r'[^a-zA-Z0-9]+', ' ', i)
             presenters.write(f"{presenter_text}\n")
+
+def create_nominee_match_tweets():
+    with open('awards.txt', 'r', encoding='utf-8') as file:
+        awards = [line.strip() for line in file.readlines()]
+    with open('nominees.txt', 'r', encoding='utf-8') as file:
+        nominees = [line.strip() for line in file.readlines()]
+
+    match_list = awards + nominees
+    pattern = "|".join(re.escape(i) for i in match_list)
+    no_rt = open('match_nominees_tweets.txt', 'w', encoding='utf-8')
+
+    for i in tweets:
+        text = word_tokenize(i)
+        if text[0] == 'RT':
+            continue
+        elif re.search(pattern, i):
+            no_rt.write(f"{i}\n")
+
+def create_presenter_match_tweets():
+    with open('awards.txt', 'r', encoding='utf-8') as file:
+        awards = [line.strip() for line in file.readlines()]
+    with open('presenters.txt', 'r', encoding='utf-8') as file:
+        presenters = [line.strip() for line in file.readlines()]
+
+    match_list = awards + presenters
+    pattern = "|".join(re.escape(i) for i in match_list)
+    no_rt = open('match_presenters_tweets.txt', 'w', encoding='utf-8')
+
+    for i in tweets:
+        text = word_tokenize(i)
+        if text[0] == 'RT':
+            continue
+        elif re.search(pattern, i):
+            no_rt.write(f"{i}\n")
+    
 
 def get_human_names(file_name):
     # Getting people's names from a file
@@ -70,6 +105,21 @@ def get_human_names(file_name):
     entities = [(ent.text, ent.label_) for ent in doc.ents]
     for ent in entities:
         if ent[1] == 'PERSON':
+            names.append(ent[0])
+
+    return names
+
+def get_entity_names(file_name):
+    # Getting people's names from a file
+    names = []
+
+    with open(file_name, "r", encoding="utf-8") as file:
+        text = file.read()
+
+    doc = NLP(text) # Open file
+    entities = [(ent.text, ent.label_) for ent in doc.ents]
+    for ent in entities:
+        if ent[1] == 'PERSON' or ent[1] == 'WORK_OF_ART':
             names.append(ent[0])
 
     return names
@@ -159,9 +209,17 @@ def find_awards_v2():
 
     
 def verify_person(person_name):
-    name_pattern = re.compile(r'\s')
+    name_pattern = re.compile(r'^[A-Z][a-z]+ [A-Z][a-z]+$')
     if re.search(name_pattern, person_name):
-        return person_name
+        if 'golden globes' not in person_name.lower():
+            return person_name
+    
+def verify_entity(entity_name):
+    name_pattern = re.compile(r'^[A-Z][a-z]+ [A-Z][a-z]+$')
+    entity_pattern = re.compile(r'^[A-Z][A-Za-z0-9\s\-.\'(),:]*$')
+    if re.search(name_pattern, entity_name) or re.search(entity_pattern, entity_name):
+        if 'goldenglobes' not in entity_name.lower() or 'golden globes' not in entity_name.lower():
+            return entity_name
 
 def group_awards():
     award_groups = open('award_groups.txt', 'w', encoding='utf-8')
@@ -214,43 +272,95 @@ def counter_winners():
         top_winners_file.write(f"{key}, {max(win_count, key=win_count.get)}\n")
 
 def count_nominees():
-    nominee_map = dict()
-    names = []
+    verified_names = []
+    names = get_entity_names("nominee_corpus.txt")
+    for name in names:
+        if verify_person(name) and 'really' not in name.lower() and 'wrong' not in name.lower() and 'Smh' not in name and 'latter' not in name.lower():
+            verified_names.append(name)
+            
+    name_count = Counter(verified_names)
 
-    with open("awards.txt", 'r', encoding='utf-8') as file:
-        awards = [line.strip() for line in file.readlines()]
-    with open("winners.txt", 'r', encoding='utf-8') as file:
-        winners = [line.strip() for line in file.readlines()]
-    with open("nominee_corpus.txt", 'r', encoding='utf-8') as file:
-        nominee_corpus = file.read()
-
-    doc = NLP(nominee_corpus) # Open file
-    entities = [ent for ent in doc.ents]
-    for ent in entities:
-        names.append(str(ent))
-
-    name_count = Counter(names)
-    
-    # Finding nominees
     nominees_file = open("nominees.txt", 'w', encoding='utf-8')
     for key in name_count.most_common():
         nominees_file.write(f"{key[0]}\n")
 
-def count_presenters():
-    names = []
-    with open("presenter_corpus.txt", 'r', encoding='utf-8') as file:
-        presenter_corpus = file.read()
-    
-    doc = NLP(presenter_corpus) # Open file
-    entities = [ent for ent in doc.ents]
-    for ent in entities:
-        names.append(str(ent))
+def match_nominees():
+    with open('awards.txt', 'r', encoding='utf-8') as file:
+        awards = [line.strip() for line in file.readlines()]
+    with open('nominees.txt', 'r', encoding='utf-8') as file:
+        nominees = [line.strip() for line in file.readlines()]
 
-    name_count = Counter(names)
+    matched_nominees = open('matched_nominees.txt','w',encoding='utf-8')
+
+    for award in awards:
+        match_award = award
+        matched_nominees_list = []
+        if "\"" in award:
+            pattern = r'"[^"]*"'
+            award = re.sub(pattern, '', award)
+        if "comedy" in award or "drama" in award:
+            pattern = r'(\bcomedy\b|\drama\b)'
+            award = re.sub(pattern, r'- \1', award)
+
+        for nominee in nominees:
+            dist = find_distance('match_nominees_tweets.txt', nominee.lower(), award.lower())
+            matched_nominees_list.append([dist, nominee, match_award])
+
+        sorted_matches = sorted(matched_nominees_list, key=lambda x: x[0])
+        top5_list = [[x[1],x[2]] for x in sorted_matches[:5]]
+        for i in top5_list:
+            matched_nominees.write(f"{i[1]}, {i[0]}\n")
+
+def count_presenters():
+    verified_names = []
+    names = get_human_names("presenter_corpus.txt")
+    for name in names:
+        if verify_person(name):
+            verified_names.append(name)
+            
+    name_count = Counter(verified_names)
 
     presenters_file = open("presenters.txt", 'w', encoding='utf-8')
     for key in name_count.most_common():
         presenters_file.write(f"{key[0]}\n")
+
+def match_presenters():
+    with open('awards.txt', 'r', encoding='utf-8') as file:
+        awards = [line.strip() for line in file.readlines()]
+    with open('presenters.txt', 'r', encoding='utf-8') as file:
+        presenters = [line.strip() for line in file.readlines()]
+
+    matched_presenters = open('matched_presenters.txt','w',encoding='utf-8')
+
+    for award in awards:
+        match_award = award
+        matched_presenters_list = []
+        if "\"" in award:
+            pattern = r'"[^"]*"'
+            award = re.sub(pattern, '', award)
+        if "comedy" in award or "drama" in award:
+            pattern = r'(\bcomedy\b|\drama\b)'
+            award = re.sub(pattern, r'- \1', award)
+
+        for presenter in presenters:
+            dist = find_distance('match_presenters_tweets.txt', presenter.lower(), award.lower())
+            matched_presenters_list.append([dist, presenter, match_award])
+
+        sorted_matches = sorted(matched_presenters_list, key=lambda x: x[0])
+        top5_list = [[x[1],x[2]] for x in sorted_matches[:5]]
+        for i in top5_list:
+            matched_presenters.write(f"{i[1]}, {i[0]}\n")
+
+def find_distance(filename, string1, string2):
+    with open(filename, 'r', encoding='utf-8') as file:
+        lines = file.read().lower()
+    try:
+        index1 = lines.index(string1)
+        index2 = lines.index(string2)
+        distance = abs(index1 - index2)
+        return distance
+    except:
+        return float('inf')
 
 # create_text_files(name='nominees')
 # find_hosts('host.txt')
@@ -259,5 +369,9 @@ def count_presenters():
 # group_awards()
 # find_winners()
 # counter_winners()
-count_nominees()
-count_presenters()
+# count_nominees()
+# count_presenters()
+# create_nominee_match_tweets()
+# match_nominees()
+# create_presenter_match_tweets()
+# match_presenters()
