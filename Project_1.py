@@ -11,14 +11,16 @@ from imdb import IMDb
 from collections import Counter
 import os
 
-df = pd.read_json('gg2013.json')
-tweets = df['text'] #list of tweet text
-accounts = df['user'] #list of users
-ia = IMDb()
 NLP = spacy.load('en_core_web_sm') # Loads spacy model
+hard_code_awards = ["best screenplay - motion picture", "best director - motion picture", "best performance by an actress in a television series - comedy or musical","best foreign language film","best performance by an actor in a supporting role in a motion picture","best performance by an actress in a supporting role in a series, mini-series or motion picture made for television","best motion picture - comedy or musical","best performance by an actress in a motion picture - comedy or musical","best mini-series or motion picture made for television","best original score - motion picture", "best performance by an actress in a television series - drama","best performance by an actress in a motion picture - drama", "cecil b. demille award", "best performance by an actor in a motion picture - comedy or musical","best motion picture - drama""best performance by an actor in a supporting role in a series, mini-series or motion picture made for television","best performance by an actress in a supporting role in a motion picture", "best television series - drama", "best performance by an actor in a mini-series or motion picture made for television","best performance by an actress in a mini-series or motion picture made for television","best animated feature film","best original song - motion picture","best performance by an actor in a motion picture - drama","best television series - comedy or musical","best performance by an actor in a television series - drama","best performance by an actor in a television series - comedy or musical"]
+
+def create_df():
+    df = pd.read_json('gg2013.json')
+    tweets = df['text'] #list of tweet text
+    return tweets
 
 # used just for reference
-def create_text_files(name):
+def create_text_files(tweets, name=""):
     with open('gg2013.json') as f:
         d = json.load(f)
         if name == "tweets":
@@ -37,12 +39,6 @@ def create_text_files(name):
             golden_globe_awards.write(f"{i}\n")
         elif text[0] == 'RT':
             continue
-        elif re.search(r'\b(won|wins|win)\b', i) and name == "won":
-            win = open('win.text', 'w', encoding='utf-8')
-            win.write(f"{i}\n")
-        elif 'Congratulations' in text or 'congratulations' in text and name == "congrats":
-            congrats = open('congrats.txt', 'w', encoding='utf-8')
-            congrats.write(f"{i}\n")
         elif re.search(r'\b(hosts?|host)\b', i) and name == "hosts":
             host = open('host.txt', 'w', encoding='utf-8')
             host.write(f"{i}\n")
@@ -59,13 +55,11 @@ def create_text_files(name):
             presenter_text = re.sub(r'[^a-zA-Z0-9]+', ' ', i)
             presenters.write(f"{presenter_text}\n")
 
-def create_nominee_match_tweets():
-    with open('awards.txt', 'r', encoding='utf-8') as file:
-        awards = [line.strip() for line in file.readlines()]
+def create_nominee_match_tweets(tweets):
     with open('nominees.txt', 'r', encoding='utf-8') as file:
         nominees = [line.strip() for line in file.readlines()]
 
-    match_list = awards + nominees
+    match_list = hard_code_awards + nominees
     pattern = "|".join(re.escape(i) for i in match_list)
     no_rt = open('match_nominees_tweets.txt', 'w', encoding='utf-8')
 
@@ -76,13 +70,11 @@ def create_nominee_match_tweets():
         elif re.search(pattern, i):
             no_rt.write(f"{i}\n")
 
-def create_presenter_match_tweets():
-    with open('awards.txt', 'r', encoding='utf-8') as file:
-        awards = [line.strip() for line in file.readlines()]
+def create_presenter_match_tweets(tweets):
     with open('presenters.txt', 'r', encoding='utf-8') as file:
         presenters = [line.strip() for line in file.readlines()]
 
-    match_list = awards + presenters
+    match_list = hard_code_awards + presenters
     pattern = "|".join(re.escape(i) for i in match_list)
     no_rt = open('match_presenters_tweets.txt', 'w', encoding='utf-8')
 
@@ -162,9 +154,8 @@ def find_awards(awards_file):
 def find_awards_v2():
     with open('golden_globe_awards.txt', 'r', encoding='utf-8') as file:
         text = [line.strip() for line in file.readlines()]
-    awards_and_winners = open('awards_and_winners.txt', 'w', encoding='utf-8')
     awards = open('awards.txt', 'w', encoding='utf-8')
-    winners = open('winners.txt', 'w', encoding='utf-8')
+    # winners = open('winners.txt', 'w', encoding='utf-8')
 
     pattern_1 = r': (.*?)\('
     pattern_2 = r': (.*?)\#'
@@ -205,9 +196,8 @@ def find_awards_v2():
 
     for key in award_map:
         awards.write(f"{key}\n")
-        winners.write(f"{award_map[key]}\n")
+        # winners.write(f"{award_map[key]}\n")
 
-    
 def verify_person(person_name):
     name_pattern = re.compile(r'^[A-Z][a-z]+ [A-Z][a-z]+$')
     if re.search(name_pattern, person_name):
@@ -233,13 +223,11 @@ def group_awards():
             award_groups.write(f"{key[0]}")
 
 def find_winners():
-    with open('award_groups.txt','r',encoding='utf-8') as file:
-        award_list = [line.strip() for line in file.readlines()] #make sure to strip new lines
     with open('awards.txt', 'r', encoding='utf-8') as file:
         award_corpus = [line for line in file.readlines()]
     winner_file = open("winners.txt", 'w', encoding='utf-8')
 
-    for award in award_list:
+    for award in hard_code_awards:
         pattern = rf"(.+?)\s+(wins|win|won)\s+{award}"
         for line in award_corpus:
             winner = re.search(pattern, line)
@@ -275,7 +263,7 @@ def count_nominees():
     verified_names = []
     names = get_entity_names("nominee_corpus.txt")
     for name in names:
-        if verify_person(name) and 'really' not in name.lower() and 'wrong' not in name.lower() and 'Smh' not in name and 'latter' not in name.lower():
+        if verify_person(name) and name != 'Bill Clinton' and 'really' not in name.lower() and 'wrong' not in name.lower() and 'Smh' not in name and 'latter' not in name.lower():
             verified_names.append(name)
             
     name_count = Counter(verified_names)
@@ -285,14 +273,12 @@ def count_nominees():
         nominees_file.write(f"{key[0]}\n")
 
 def match_nominees():
-    with open('awards.txt', 'r', encoding='utf-8') as file:
-        awards = [line.strip() for line in file.readlines()]
     with open('nominees.txt', 'r', encoding='utf-8') as file:
         nominees = [line.strip() for line in file.readlines()]
 
     matched_nominees = open('matched_nominees.txt','w',encoding='utf-8')
 
-    for award in awards:
+    for award in hard_code_awards:
         match_award = award
         matched_nominees_list = []
         if "\"" in award:
@@ -315,7 +301,7 @@ def count_presenters():
     verified_names = []
     names = get_human_names("presenter_corpus.txt")
     for name in names:
-        if verify_person(name):
+        if verify_person(name) and name != 'Bill Clinton':
             verified_names.append(name)
             
     name_count = Counter(verified_names)
@@ -325,14 +311,12 @@ def count_presenters():
         presenters_file.write(f"{key[0]}\n")
 
 def match_presenters():
-    with open('awards.txt', 'r', encoding='utf-8') as file:
-        awards = [line.strip() for line in file.readlines()]
     with open('presenters.txt', 'r', encoding='utf-8') as file:
         presenters = [line.strip() for line in file.readlines()]
 
     matched_presenters = open('matched_presenters.txt','w',encoding='utf-8')
 
-    for award in awards:
+    for award in hard_code_awards:
         match_award = award
         matched_presenters_list = []
         if "\"" in award:
@@ -364,7 +348,6 @@ def find_distance(filename, string1, string2):
 
 # create_text_files(name='nominees')
 # find_hosts('host.txt')
-# find_awards('awards.txt')
 # find_awards_v2()
 # group_awards()
 # find_winners()

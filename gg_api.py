@@ -1,5 +1,7 @@
-'''Version 0.4'''
+from Project_1 import *
 
+'''Version 0.4'''
+hard_code_awards = ["best screenplay - motion picture", "best director - motion picture", "best performance by an actress in a television series - comedy or musical","best foreign language film","best performance by an actor in a supporting role in a motion picture","best performance by an actress in a supporting role in a series, mini-series or motion picture made for television","best motion picture - comedy or musical","best performance by an actress in a motion picture - comedy or musical","best mini-series or motion picture made for television","best original score - motion picture", "best performance by an actress in a television series - drama","best performance by an actress in a motion picture - drama", "cecil b. demille award", "best performance by an actor in a motion picture - comedy or musical","best motion picture - drama""best performance by an actor in a supporting role in a series, mini-series or motion picture made for television","best performance by an actress in a supporting role in a motion picture", "best television series - drama", "best performance by an actor in a mini-series or motion picture made for television","best performance by an actress in a mini-series or motion picture made for television","best animated feature film","best original song - motion picture","best performance by an actor in a motion picture - drama","best television series - comedy or musical","best performance by an actor in a television series - drama","best performance by an actor in a television series - comedy or musical"]
 def get_hosts(year):
     '''Hosts is a list of one or more strings. Do NOT change the name
     of this function or what it returns.'''
@@ -39,6 +41,14 @@ def pre_ceremony():
     plain text file. It is the first thing the TA will run when grading.
     Do NOT change the name of this function or what it returns.'''
     # Your code here
+    tweets = create_df()
+    create_text_files(tweets, name='tweets')
+    create_text_files(tweets, name="gg_awards")
+    create_text_files(tweets, name="nominees")
+    create_text_files(tweets, name="presenters")
+    create_text_files(tweets, name="hosts")
+    create_nominee_match_tweets(tweets)
+    create_presenter_match_tweets(tweets)
     print("Pre-ceremony processing complete.")
     return
 
@@ -49,6 +59,7 @@ def main():
     run when grading. Do NOT change the name of this function or
     what it returns.'''
     # Your code here
+    pre_ceremony()
     return
 
 if __name__ == '__main__':
