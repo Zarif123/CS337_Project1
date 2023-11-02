@@ -1,0 +1,30 @@
+{
+    "hosts": [
+        "amy",
+        "ben"
+    ],
+    "award_data": {
+        "django": {
+            "nominees": [
+                "carl",
+                "kevin"
+            ],
+            "presenters": [
+                "fred",
+                "guifa"
+            ],
+            "winner": "william"
+        },
+        "pirates": {
+            "nominees": [
+                "don",
+                "edward"
+            ],
+            "presenters": [
+                "leo",
+                "pelt"
+            ],
+            "winner": "johnny"
+        }
+    }
+}
