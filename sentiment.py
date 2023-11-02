@@ -4,16 +4,9 @@ import re
 exclude_words = ['best', 'supporting']
 result = {}
 
-
-def get_sentiment(winner=True):
-    if winner:
-        with open('tweets.txt', 'r', encoding='UTF-8') as file:
+def calc_sentiment(sentiment_file, winners):
+    with open('tweets.txt', 'r', encoding='UTF-8') as file:
             tweets = [line.strip() for line in file.readlines()]
-        with open('top_winners.txt', 'r', encoding='UTF-8') as file:
-            winners = [line.split(',')[1].strip() for line in file.readlines()]
-        sentiment_winner = open("sentiment_winner.txt", 'w', encoding='utf-8')
-
-    # pdb.set_trace()
     for winner in winners:
         score = 0
         for tweet in tweets:
@@ -29,10 +22,20 @@ def get_sentiment(winner=True):
                     score -= 1
 
         if score > 0:
-            sentiment_winner.write(f"{winner}, {score}, positive\n")
+            sentiment_file.write(f"{winner}, {score}, positive\n")
         elif score < 0:
-            sentiment_winner.write(f"{winner}, {score}, negative\n")
+            sentiment_file.write(f"{winner}, {score}, negative\n")
         else:
-            sentiment_winner.write(f"{winner}, {score}, neutral\n")
+            sentiment_file.write(f"{winner}, {score}, neutral\n")
 
-# get_sentiment()
+def get_sentiment():
+    with open('top_winners.txt', 'r', encoding='UTF-8') as file:
+        winners = [line.split(',')[1].strip() for line in file.readlines()]
+    with open('host_names.txt', 'r', encoding='UTF-8') as file:
+        hosts = [line.strip() for line in file.readlines()]
+    sentiment = open("sentiment_results.txt", 'w', encoding='utf-8')
+    calc_sentiment(sentiment, winners)
+    print("Found sentiment of winners")
+    calc_sentiment(sentiment, hosts)
+    print("Found sentiment of hosts")
+    print("Finished finding sentiment")

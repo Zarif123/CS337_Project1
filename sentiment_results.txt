@@ -1,0 +1,25 @@
+quentin tarantino, 0, neutral
+ben affleck, 1, positive
+rt @variety: winner: “amour” wins best foreign language film #goldenglobes, 0, neutral
+christoph waltz, 0, neutral
+mini-series or motion picture made for television, 0, neutral
+rt @goldenglobes: best motion picture - comedy or musical - les miserables - #goldenglobes, 0, neutral
+jennifer lawrence, -1, negative
+rt @mtvnews: congrats 'game change' for winning best mini-series or motion picture made for television! http://t.co/z36syljf #goldenglobes, 0, neutral
+mychael danna, 0, neutral
+claire danes, -2, negative
+jessica chastain, 1, positive
+b. demille, 0, neutral
+hugh jackman, 0, neutral
+rt @goldenglobes: best motion picture - drama - argo - #goldenglobes, 0, neutral
+anne hathaway, 2, positive
+rt @goldenglobes: best television series - drama - homeland (@sho_homeland) - #goldenglobes, 0, neutral
+rt @barta_ntdaily: 9th award: best actor in a mini-series or motion picture made for television goes to kevinnnn costner!! my hero. #goldenglobes, 0, neutral
+rt @goldenglobes: best animated feature film - brave (@pixarbrave) - #goldenglobes, 0, neutral
+rt @nbc: “skyfall” from skyfall wins for best original song - motion picture! #goldenglobes, 0, neutral
+daniel day, 0, neutral
+rt @goldenglobes: best television series - comedy or musical - girls (@girlshbo) - #goldenglobes, 0, neutral
+best performance by an actor in a television series - drama : damian lewis #goldenglobes, 0, neutral
+don cheadle, 0, neutral
+Amy Poehler, -741, negative
+Tina Fey, -588, negative

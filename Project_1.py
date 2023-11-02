@@ -407,14 +407,16 @@ def find_distance(filename, string1, string2):
     except:
         return float('inf')
 
-def create_human_output(hosts, winners, nominees, presenters):
+def create_human_output(hosts, winners, nominees, presenters, student_awards):
     human_output_text = open('human_output_text.txt', 'w', encoding='utf-8')
     human_output_text.write("Host(s): ")
+
     for i in range(len(hosts)):
-        if i < len(hosts):
+        if i < len(hosts) - 1:
             human_output_text.write(f"{hosts[i]},")
         else:
             human_output_text.write(f"{hosts[i]}\n")
+
     for award in hard_code_awards:
         human_output_text.write(f"Award: {award}\n")
         for i in range(len(presenters[award])):
@@ -428,6 +430,10 @@ def create_human_output(hosts, winners, nominees, presenters):
             else:
                 human_output_text.write(f"Presenters: {nominees[award][i]},")
         human_output_text.write(f"Winner: {winners[award]}\n\n")
+
+    human_output_text.write(f"\nAwards mined by students:")
+    for award in student_awards:
+        human_output_text.write(f"\n{award}")
 
 def create_json_output(hosts, winners, nominees, presenters, awards):
     award_data = {}
