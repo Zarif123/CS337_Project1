@@ -1,30 +1,372 @@
 {
     "hosts": [
-        "amy",
-        "ben"
+        "Amy Poehler",
+        "Tina Fey"
     ],
     "award_data": {
-        "django": {
+        "best screenplay - motion picture": {
             "nominees": [
-                "carl",
-                "kevin"
+                "Samantha Barks",
+                "Team Tarantino",
+                "Marry Brown",
+                "Sylvester Stallone",
+                "Monica Potter"
             ],
             "presenters": [
-                "fred",
-                "guifa"
+                "Sly Stallone",
+                "Spielberg Clinton"
             ],
-            "winner": "william"
+            "winner": "quentin tarantino"
         },
-        "pirates": {
+        "best director - motion picture": {
             "nominees": [
-                "don",
-                "edward"
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
             ],
             "presenters": [
-                "leo",
-                "pelt"
+                "Arnold Schwartzanegger",
+                "Bob Loblaw"
             ],
-            "winner": "johnny"
+            "winner": "ben affleck"
+        },
+        "best performance by an actress in a television series - comedy or musical": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": ""
+        },
+        "best foreign language film": {
+            "nominees": [
+                "Jim Pearson",
+                "Jonny Greenwood",
+                "The Campaign",
+                "Monica Potter",
+                "Sylvester Stallone"
+            ],
+            "presenters": [
+                "Sylvester Stalone",
+                "Arnold Schwazsafnahgj"
+            ],
+            "winner": "rt @variety: winner: \u201camour\u201d wins best foreign language film #goldenglobes"
+        },
+        "best performance by an actor in a supporting role in a motion picture": {
+            "nominees": [
+                "Jodi Foster",
+                "Ang Lee",
+                "Mandy Patinkin",
+                "Meryl Steep",
+                "Maggie Smith"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "christoph waltz"
+        },
+        "best performance by an actress in a supporting role in a series, mini-series or motion picture made for television": {
+            "nominees": [
+                "Maggie Smith",
+                "Zachary Qunito",
+                "The Girl",
+                "Jeff Daniels",
+                "Richard Parker"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "maggie smith"
+        },
+        "best motion picture - comedy or musical": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "rt @goldenglobes: best motion picture - comedy or musical - les miserables - #goldenglobes"
+        },
+        "best performance by an actress in a motion picture - comedy or musical": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "jennifer lawrence"
+        },
+        "best mini-series or motion picture made for television": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "rt @mtvnews: congrats 'game change' for winning best mini-series or motion picture made for television! http://t.co/z36syljf #goldenglobes"
+        },
+        "best original score - motion picture": {
+            "nominees": [
+                "Randy Newman",
+                "Anna Karenina",
+                "Oooh Adele",
+                "Love Adele",
+                "Moonrise Kingdom"
+            ],
+            "presenters": [
+                "Kristin Wig",
+                "Tony Mendez"
+            ],
+            "winner": "mychael danna"
+        },
+        "best performance by an actress in a television series - drama": {
+            "nominees": [
+                "Jim Pearson",
+                "Sloth Meltdown",
+                "Jonny Greenwood",
+                "The Campaign",
+                "Monica Potter"
+            ],
+            "presenters": [
+                "Arnold Schwartzenegger",
+                "Arnold Shwarzeneger"
+            ],
+            "winner": "claire danes"
+        },
+        "best performance by an actress in a motion picture - drama": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "jessica chastain"
+        },
+        "cecil b. demille award": {
+            "nominees": [
+                "Morena Baccharin",
+                "Mark Harmon",
+                "Sloth Meltdown",
+                "Jim Pearson",
+                "Jonny Greenwood"
+            ],
+            "presenters": [
+                "Jason Bateman",
+                "Liev Schreiber"
+            ],
+            "winner": "b. demille"
+        },
+        "best performance by an actor in a motion picture - comedy or musical": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "hugh jackman"
+        },
+        "best motion picture - drama": {
+            "nominees": [
+                "Jack Reacher",
+                "Jason Isaacs",
+                "Peter Longworth",
+                "Nooo Wolverine",
+                "Quintin Tarintino"
+            ],
+            "presenters": [
+                "Sorry Meryl",
+                "Bob Loblaw"
+            ],
+            "winner": "rt @goldenglobes: best motion picture - drama - argo - #goldenglobes"
+        },
+        "best performance by an actor in a supporting role in a series, mini-series or motion picture made for television": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": ""
+        },
+        "best performance by an actress in a supporting role in a motion picture": {
+            "nominees": [
+                "James Dolan",
+                "Miranda Hillard",
+                "Anne Hathway",
+                "Mac Greenfield",
+                "Marry Brown"
+            ],
+            "presenters": [
+                "Sly Stallone",
+                "Spielberg Clinton"
+            ],
+            "winner": "anne hathaway"
+        },
+        "best television series - drama": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "rt @goldenglobes: best television series - drama - homeland (@sho_homeland) - #goldenglobes"
+        },
+        "best performance by an actor in a mini-series or motion picture made for television": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "rt @barta_ntdaily: 9th award: best actor in a mini-series or motion picture made for television goes to kevinnnn costner!! my hero. #goldenglobes"
+        },
+        "best performance by an actress in a mini-series or motion picture made for television": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": ""
+        },
+        "best animated feature film": {
+            "nominees": [
+                "Morena Baccharin",
+                "Sloth Meltdown",
+                "Jim Pearson",
+                "Jonny Greenwood",
+                "The Campaign"
+            ],
+            "presenters": [
+                "Liev Schreiber",
+                "Jason Bateman"
+            ],
+            "winner": "rt @goldenglobes: best animated feature film - brave (@pixarbrave) - #goldenglobes"
+        },
+        "best original song - motion picture": {
+            "nominees": [
+                "Tay Tay",
+                "Love Adele",
+                "Oooh Adele",
+                "Damian Fransisco",
+                "Randy Newman"
+            ],
+            "presenters": [
+                "Kristin Wig",
+                "Tony Mendez"
+            ],
+            "winner": "rt @nbc: \u201cskyfall\u201d from skyfall wins for best original song - motion picture! #goldenglobes"
+        },
+        "best performance by an actor in a motion picture - drama": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "daniel day"
+        },
+        "best television series - comedy or musical": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "rt @goldenglobes: best television series - comedy or musical - girls (@girlshbo) - #goldenglobes"
+        },
+        "best performance by an actor in a television series - drama": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "best performance by an actor in a television series - drama : damian lewis #goldenglobes"
+        },
+        "best performance by an actor in a television series - comedy or musical": {
+            "nominees": [
+                "Amy Poehler",
+                "Benedict Cumberbatch",
+                "Anne Hathaway",
+                "Jodie Foster",
+                "Bill Murray"
+            ],
+            "presenters": [
+                "Robert Pattinson",
+                "Kristen Wiig"
+            ],
+            "winner": "don cheadle"
         }
     }
 }

@@ -100,11 +100,6 @@ def main():
     print("Got presenters")
     create_human_output(hosts, winners, nominees, presenters)
     print("Made human readable output")
-    # hosts = ['amy', 'ben']
-    # winners = {'django': 'william', 'pirates': 'johnny'}
-    # nominees = {'django': ['carl', 'kevin'], 'pirates': ['don', 'edward']}
-    # presenters = {'django': ['fred', 'guifa'], 'pirates': ['leo', 'pelt']}
-    # awards = ['django', 'pirates']
     create_json_output(hosts, winners, nominees, presenters, hard_code_awards)
     print("Made json output")
     return
